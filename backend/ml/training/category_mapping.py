@@ -52,6 +52,31 @@ CATEGORY_MAP: dict[str, str] = {
     "Civil Engineer": "Other",
     "Mechanical Engineer": "Other",
     "Electrical Engineering": "Other",
+
+    # Custom Resume.csv categories mapping
+    "INFORMATION-TECHNOLOGY": "Software Engineer",
+    "BUSINESS-DEVELOPMENT": "Product Manager",
+    "ADVOCATE": "Other",
+    "CHEF": "Other",
+    "FINANCE": "Other",
+    "ENGINEERING": "Software Engineer",
+    "ACCOUNTANT": "Other",
+    "FITNESS": "Other",
+    "AVIATION": "Other",
+    "SALES": "Other",
+    "HEALTHCARE": "Other",
+    "CONSULTANT": "Other",
+    "BANKING": "Other",
+    "CONSTRUCTION": "Other",
+    "PUBLIC-RELATIONS": "Other",
+    "DESIGNER": "UI/UX Designer",
+    "ARTS": "Other",
+    "TEACHER": "Other",
+    "APPAREL": "Other",
+    "DIGITAL-MEDIA": "Other",
+    "AGRICULTURE": "Other",
+    "AUTOMOBILE": "Other",
+    "BPO": "Other",
 }
 
 # The full list of target categories our model will predict

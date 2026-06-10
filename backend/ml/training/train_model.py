@@ -68,6 +68,11 @@ def load_and_prepare_data(csv_path: Path) -> pd.DataFrame:
     print(f"[1/6] Loading dataset from {csv_path}...")
 
     df = pd.read_csv(csv_path)
+    
+    # Map Resume_str column to Resume if loading the custom dataset
+    if "Resume_str" in df.columns and "Resume" not in df.columns:
+        df["Resume"] = df["Resume_str"]
+
     print(f"       Loaded {len(df)} resumes with {df['Category'].nunique()} categories")
 
     # Show original category distribution
@@ -152,7 +157,6 @@ def train_and_evaluate_models(
             max_iter=1000,
             C=1.0,
             solver="lbfgs",
-            multi_class="multinomial",
             random_state=RANDOM_STATE,
         ),
         "Random Forest": RandomForestClassifier(
@@ -283,7 +287,13 @@ def main() -> None:
     print("=" * 60)
 
     csv_path = DATA_DIR / CSV_FILENAME
-    if not csv_path.exists():
+    
+    # Check for custom local dataset in Resumes/Resume/Resume.csv
+    custom_csv_path = BACKEND_DIR.parent / "Resumes" / "Resume" / "Resume.csv"
+    if custom_csv_path.exists():
+        csv_path = custom_csv_path
+        print(f"\n[✓] Detected custom dataset at {csv_path}")
+    elif not csv_path.exists():
         print(f"\nError: Dataset not found at {csv_path}")
         print(f"Please download 'UpdatedResumeDataSet.csv' from Kaggle and place it in:")
         print(f"  {DATA_DIR}/")
