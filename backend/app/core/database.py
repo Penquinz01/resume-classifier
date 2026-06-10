@@ -10,12 +10,34 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import settings
+import ssl as _ssl
+
+# Build connect_args for asyncpg when using PostgreSQL with sslmode
+_db_url = settings.DATABASE_URL
+_connect_args: dict = {}
+
+if "asyncpg" in _db_url and "sslmode=" in _db_url:
+    # asyncpg uses 'ssl' instead of 'sslmode'; strip it from the URL
+    # and pass a proper SSL context via connect_args
+    from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+
+    parsed = urlparse(_db_url)
+    params = parse_qs(parsed.query)
+    params.pop("sslmode", None)
+    clean_query = urlencode(params, doseq=True)
+    _db_url = urlunparse(parsed._replace(query=clean_query))
+
+    ssl_ctx = _ssl.create_default_context()
+    ssl_ctx.check_hostname = False
+    ssl_ctx.verify_mode = _ssl.CERT_NONE
+    _connect_args = {"ssl": ssl_ctx}
 
 # Create async engine
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    _db_url,
     echo=settings.DEBUG,
     future=True,
+    connect_args=_connect_args,
 )
 
 # Session factory
